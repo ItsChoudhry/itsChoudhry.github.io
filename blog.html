@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Developer Portfolio</title>
+    <title>Blog - Choudhry</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -35,27 +35,66 @@
       </div>
 
       <nav>
-        <a href="./index.html" class="link active">Home</a>
+        <a href="./index.html" class="link">Home</a>
         <a href="./projects.html" class="link">Projects</a>
-        <a href="./blog.html" class="link">Blog</a>
+        <a href="./blog.html" class="link active">Blog</a>
       </nav>
     </section>
 
-    <section id="intro">
-      <h2>Welcome</h2>
-      <p>
-        I'm a Senior Software Engineer at Bloomberg, specializing in
-        high-performance C++ real-time systems. I'm a family man, but when I
-        have the time I study and builds things at home.
-      </p>
+    <section id="blog">
+      <h2>Blog</h2>
+      <p class="blog-intro">Thoughts.</p>
+
+      <div id="blog-posts" class="blog-posts">
+        <!-- Blog posts will be loaded here by JavaScript -->
+      </div>
     </section>
-    <div class="contact-info">
-      <h3>Get In Touch</h3>
-      <p>
-        Feel free to reach out to me on
-        <a href="https://x.com/itsChoudhry">X</a> or check out my work on
-        <a href="https://github.com/itsChoudhry">GitHub</a>.
-      </p>
-    </div>
+
+    <script src="./blog/blog-parser.js"></script>
+    <script>
+      // Render blog posts
+      function renderBlogPosts() {
+        const blogPostsContainer = document.getElementById("blog-posts");
+
+        if (window.blogPosts && blogPosts.length > 0) {
+          const postsHtml = blogPosts
+            .map(
+              (post) => `
+                        <article class="blog-post-card">
+                            <header class="post-header">
+                                <h3 class="post-title">
+                                    <a href="./blog/post.html?slug=${post.slug}">${post.frontmatter.title}</a>
+                                </h3>
+                                <time class="post-date">${post.formattedDate}</time>
+                            </header>
+                            <div class="post-excerpt">
+                                <p>${post.excerpt}</p>
+                            </div>
+                            <footer class="post-footer">
+                                <a href="./blog/post.html?slug=${post.slug}" class="read-more">Read more</a>
+                            </footer>
+                        </article>
+                    `,
+            )
+            .join("");
+
+          blogPostsContainer.innerHTML = postsHtml;
+        } else {
+          blogPostsContainer.innerHTML = "<p>No blog posts found.</p>";
+        }
+      }
+
+      // Listen for when blog posts are loaded
+      window.addEventListener('blogPostsLoaded', function(event) {
+        renderBlogPosts();
+      });
+
+      // Also render on DOM ready in case posts are already loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        // Small delay to ensure the blog parser has had time to load
+        setTimeout(renderBlogPosts, 100);
+      });
+    </script>
   </body>
 </html>
+
